@@ -29,4 +29,12 @@
         android:layout_width="150dp"
         android:text="Pesquisar"
         android:layout_height="40dp"/>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        tools:layout_editor_absoluteX="160dp"
+        tools:layout_editor_absoluteY="175dp"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>
