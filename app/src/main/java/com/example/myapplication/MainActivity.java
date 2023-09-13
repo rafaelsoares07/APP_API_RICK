@@ -6,6 +6,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btnFetchPerson;
     private Button btnSharedInfo;
     private ImageView imagePerson;
+    private TextView textHasConnection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
         textStatus = findViewById(R.id.textStatus);
         textOrigin = findViewById(R.id.textOrigin);
         textSpecie = findViewById(R.id.textSpecie);
+
+        textHasConnection = findViewById(R.id.textConnection);
 
         btnFetchPerson = findViewById(R.id.btnFetchPerson);
         btnSharedInfo= findViewById(R.id.btnSharedInfo);
@@ -84,6 +88,18 @@ public class MainActivity extends AppCompatActivity {
             startActivity(shareIntent);
 
         });
+
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+        if (networkInfo != null && networkInfo.isConnectedOrConnecting()) {
+
+        } else {
+            tela.setVisibility(View.GONE);
+            textHasConnection.setVisibility(View.VISIBLE);
+
+            Toast.makeText(this, "Sem conexão de rede", Toast.LENGTH_SHORT).show();
+        }
 
 
     }
