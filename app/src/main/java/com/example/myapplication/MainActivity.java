@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.PowerManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,8 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
 import com.example.myapplication.Api.MySingleton;
@@ -42,14 +42,33 @@ public class MainActivity extends AppCompatActivity {
     private ImageView imagePerson;
     private TextView textHasConnection;
 
+
+    private int segundos = 0;
+    private boolean emExecucao = true;
+    private TextView contadorTextView;
+
+    ContadorInatividade contador = new ContadorInatividade();
+
+    PowerManager pm;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
+
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        pm = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
+
+
+
         tela = findViewById(R.id.tela);
 
-        textName = findViewById(R.id.textName);
+        textName = findViewById(R.id.textTitle);
         textStatus = findViewById(R.id.textStatus);
         textOrigin = findViewById(R.id.textOrigin);
         textSpecie = findViewById(R.id.textSpecie);
@@ -104,6 +123,24 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        checkInative();
+    }
+
+    @Override
+        public void onStop() {
+
+            super.onStop();
+
+            checkInative();
+
+
+        }
+
+
     private void fetchPerson(){
         int randomNumber = new Random().nextInt(500);
         String url = "https://rickandmortyapi.com/api/character/" + randomNumber ;
@@ -143,26 +180,20 @@ public class MainActivity extends AppCompatActivity {
                 });
 
         MySingleton.getInstance(this).addToRequestQueue(jsonObjectRequest);
-    }}
+    }
 
-//    public  boolean isInternetConnection() {
-//
-//        Context context = null;
-//
-//        if (context == null) {
-//            return false;
-//        }
-//        else {
-//            ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-//            if (!connectivityManager.getActiveNetworkInfo().isConnectedOrConnecting()) {
-//                return false;
-//            } else {
-//                return true;
-//            }
-//
-//        }
-//    }
-//}
+    public void checkInative(){
+        if (pm.isInteractive()) {
+            contador.resetContador();
+            Log.i("state-app", "Esta em modo INTERATIVO");
+        }
+        else{
+            contador.iniciarContador();
+            Log.i("state-app", "Esta em modo NÃO INTERATIVO");
+        }
+    }
+
+}
 
 
 
